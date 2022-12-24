@@ -3,8 +3,6 @@ import os
 from playsound import playsound
 
 
-
-tts(text)
 def TTS(input_text):
     text = str(input_text)
 
