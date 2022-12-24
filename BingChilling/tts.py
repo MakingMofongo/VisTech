@@ -1,5 +1,6 @@
 from gtts import gTTS
 import os
+from playsound import playsound
 
 
 def TTS(input_text):
@@ -11,4 +12,6 @@ def TTS(input_text):
 
     obj.save("welcome.mp3")
 
-    os.system("afplay welcome.mp3")
+    playsound('welcome.mp3')
+
+TTS('brasdfsh')
