@@ -3,6 +3,8 @@ import os
 from playsound import playsound
 
 
+
+tts(text)
 def TTS(input_text):
     text = str(input_text)
 
@@ -14,4 +16,4 @@ def TTS(input_text):
 
     playsound('welcome.mp3')
 
-TTS('brssdfasdfsh')
+TTS(''' Laud''')
