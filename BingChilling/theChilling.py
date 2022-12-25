@@ -3,9 +3,16 @@ import numpy as np
 import face_recognition
 import os
 from datetime import datetime
-# from PIL import ImageGrab
- 
-path = 'ImagesAttendance'
+
+from SpeechIO import stt,tts
+from FaceSave import Capture
+
+
+
+from PIL import ImageGrab
+
+Capture()
+path = 'Faces/Captured'
 images = []
 classNames = []
 myList = os.listdir(path)
