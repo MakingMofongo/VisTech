@@ -15,7 +15,7 @@ def Capture():
         name = stt()
         print(f'name is {name}')
 
-        cv2.imwrite(f'BingChilling/Faces/Captured/{name}.png',frame)
+        cv2.imwrite(f'BingChilling/Faces/Captured/{name}.jpeg',frame)
         cv2.destroyAllWindows()
         break
 

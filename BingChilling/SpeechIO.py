@@ -16,7 +16,8 @@ def stt():
                 # if r.recognize_google(audio) == "stop":
                 #     quit()
             except Exception as e:
-                print(f"Error: {str(e)}")
+                print(f"STT Error: {str(e)}")
+                return stt()
             
             return said
             
