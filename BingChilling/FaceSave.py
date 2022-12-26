@@ -9,13 +9,13 @@ def Capture():
     while(True):
         cv2.imshow('img1',frame) #display the captured image
 
-        sleep(.3)
+        cv2.waitKey(1000)
         print('Who:')
         tts('Who is it?')
         name = stt()
         print(f'name is {name}')
 
-        cv2.imwrite(f'Faces/Captured/{name}.png',frame)
+        cv2.imwrite(f'BingChilling/Faces/Captured/{name}.png',frame)
         cv2.destroyAllWindows()
         break
 

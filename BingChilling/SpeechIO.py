@@ -31,6 +31,6 @@ def tts(input_text):
 
     obj = gTTS(text=text, lang=language, slow=False)
 
-    obj.save("welcome.mp3")
+    obj.save("BingChilling/welcome.mp3")
 
     playsound('welcome.mp3')

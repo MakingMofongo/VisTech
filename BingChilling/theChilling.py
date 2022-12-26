@@ -12,7 +12,7 @@ from FaceSave import Capture
 from PIL import ImageGrab
 
 Capture()
-path = 'Faces/Captured'
+path = 'BingChilling/Faces/Captured'
 images = []
 classNames = []
 myList = os.listdir(path)
