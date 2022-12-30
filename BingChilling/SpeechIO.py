@@ -11,7 +11,7 @@ def stt(prompt):
 
             print("Please say something...")
             tts(prompt)
-            audio = r.listen(source)
+            audio = r.listen(source,timeout=3,phrase_time_limit=3)
 
             try:
                 said=r.recognize_google(audio)
@@ -20,7 +20,12 @@ def stt(prompt):
                 #     quit()
             except Exception as e:
                 print(f"STT Error: {str(e)}")
-                return stt()
+                return stt(prompt)
+            except :
+                return stt(prompt)
+            finally:
+                del r
+                del source
             
             return said
             
@@ -31,10 +36,10 @@ def stt(prompt):
 def tts(input_text):
     text = str(input_text)
 
-    language = 'en'
+    # language = 'en'
 
-    obj = gTTS(text=text, lang=language, slow=False)
+    # obj = gTTS(text=text, lang=language, slow=False)
 
-    obj.save("BingChilling/welcome.mp3")
+    # obj.save("welcome.mp3")
 
-    playsound('BingChilling/welcome.mp3')
+    playsound('welcome.mp3')
