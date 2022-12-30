@@ -5,12 +5,9 @@ import os
 from datetime import datetime
 import time
 
-from SpeechIO import stt,tts
 from FaceSave import Capture
 
 import concurrent.futures
-
-
 
 
 from PIL import ImageGrab
@@ -106,7 +103,7 @@ def main():
     Threader.submit(ProcessRepeater)
 
     print('loops started**')
-    time.sleep(5)
+    time.sleep(8)
     print('slept')
 
     # with concurrent.futures.ProcessPoolExecutor() as executor:

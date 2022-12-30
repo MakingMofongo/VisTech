@@ -2,12 +2,15 @@ import speech_recognition as sr
 from gtts import gTTS
 from playsound import playsound
 
-def stt():
+def stt(prompt):
     r = sr.Recognizer()
 
     with sr.Microphone() as source:
+            print('adjusting for ambient noise')
             r.adjust_for_ambient_noise(source)
+
             print("Please say something...")
+            tts(prompt)
             audio = r.listen(source)
 
             try:
@@ -34,4 +37,4 @@ def tts(input_text):
 
     obj.save("BingChilling/welcome.mp3")
 
-    playsound('welcome.mp3')
+    playsound('BingChilling/welcome.mp3')

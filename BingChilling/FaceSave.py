@@ -10,9 +10,7 @@ def Capture():
         cv2.imshow('img1',frame) #display the captured image
 
         cv2.waitKey(1000)
-        print('Who:')
-        tts('Who is it?')
-        name = stt()
+        name = stt('who dat')
         print(f'name is {name}')
 
         cv2.imwrite(f'BingChilling/Faces/Captured/{name}.jpeg',frame)
