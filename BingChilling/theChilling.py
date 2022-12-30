@@ -8,20 +8,14 @@ import time
 from SpeechIO import stt,tts
 from FaceSave import Capture
 
-import threading
-import queue
+import concurrent.futures
 
-# import multiprocessing as mp
-# from multiprocessing import Process
 
 
 
 from PIL import ImageGrab
 
-path = 'BingChilling/Faces/Captured'
-images = []
-classNames = [] #names of captured images without extension
-myList = os.listdir(path)
+
 
 
 def findEncodings(images):
@@ -47,29 +41,47 @@ def findEncodings(images):
         print('couldnt find a single face, exiting....')
         exit()
 
+def ProcessRepeater():
+    global facesCurFrame,encodesCurFrame
+    Processor = concurrent.futures.ProcessPoolExecutor()
+    while True:
+        future1 = Processor.submit(liveEncodings,imgS)
+        facesCurFrame,encodesCurFrame= future1.result()
+
 
 def snap(cap):
     while True:
-        print('finna snap')
         global img
+        # print('globalled img')
         success, img = cap.read()
+        # print('read image............')
         global imgS
         imgS = cv2.resize(img,(0,0),None,0.25,0.25)
         imgS = cv2.cvtColor(imgS, cv2.COLOR_BGR2RGB)
 
-def liveEncodings():
-    while True:
-
-        global facesCurFrame
-        facesCurFrame= face_recognition.face_locations(imgS)
-        
-        global encodesCurFrame
-        encodesCurFrame = face_recognition.face_encodings(imgS,facesCurFrame)
+def liveEncodings(imgS):
+    # print('encoding')
+    global facesCurFrame
+    # print('encoding globalled')
+    facesCurFrame= face_recognition.face_locations(imgS)
+    # print('recoged')
+    
+    global encodesCurFrame
+    encodesCurFrame = face_recognition.face_encodings(imgS,facesCurFrame)
+    print('LiveEncoded!!!!!!!!!!!!!!!!!!!!!!!!!')
+    result = facesCurFrame,encodesCurFrame
+    return result
 
     
 def main():
-
     Capture()
+    global path,images,classNames,myList
+    path = 'BingChilling/Faces/Captured'
+    images = []
+    classNames = [] #names of captured images without extension
+    myList = os.listdir(path)
+
+ 
 
 
     print(myList)
@@ -88,16 +100,20 @@ def main():
     
     cap = cv2.VideoCapture(0)
 
-    thread = threading.Thread(target=liveEncodings)
-    thread2 = threading.Thread(target=snap,args=(cap,))
-    thread2.start()
-    time.sleep(1)
-    thread.start()
-    time.sleep(1)
+    Threader = concurrent.futures.ThreadPoolExecutor()
+    Threader.submit(snap,cap)
+    time.sleep(2) 
+    Threader.submit(ProcessRepeater)
+
+    print('loops started**')
+    time.sleep(5)
+    print('slept')
+
+    # with concurrent.futures.ProcessPoolExecutor() as executor:
+
+
+    print('gotten out of WITH loop')
     while True:
-
-
-
         for encodeFace,faceLoc in zip(encodesCurFrame,facesCurFrame):
             
             matches = face_recognition.compare_faces(encodeListKnown,encodeFace)
