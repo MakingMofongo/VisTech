@@ -1,14 +1,17 @@
+import time
+t1=time.time()
 import cv2
 import numpy as np
 import face_recognition
 import os
-from datetime import datetime
-import time
+import keyboard
 
 from FaceSave import Capture
 
 import concurrent.futures
+t2=time.time()
 
+print(f'import took: {(t2-t1)* 10**3}ms')
 
 
 
@@ -21,7 +24,7 @@ def findEncodings(images):
         n+=1
         img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         try:
-            encode = face_recognition.face_encodings(img,model="large")[0]
+            encode = face_recognition.face_encodings(img,num_jitters=5,model="large")[0]
             
         except IndexError:
             print(f"Couldnt detect {classNames[n]}'s face, Skipping...")
@@ -31,6 +34,7 @@ def findEncodings(images):
             encodeList.append(encode)
 
     if encodeList:
+        
         return encodeList
     else:
         print('couldnt find a single face, exiting....')
@@ -41,6 +45,8 @@ def encodeRepeater():
     global encodesCurFrame
     Processor = concurrent.futures.ProcessPoolExecutor()
     while True:
+        if (exiting):
+            break
         future1 = Processor.submit(liveEncodings,imgS,facesCurFrame)
         encodesCurFrame= future1.result()
 
@@ -49,12 +55,16 @@ def locationsRepeater():
     global facesCurFrame
     Processor = concurrent.futures.ProcessPoolExecutor()
     while True:
+        if (exiting):
+            break
         future1 = Processor.submit(liveLoco,imgS)
         facesCurFrame= future1.result()
 
 
 def snap(cap):
     while True:
+        if(exiting):
+            break
         global img
         # print('globalled img')
         success, img = cap.read()
@@ -66,7 +76,7 @@ def snap(cap):
 def liveEncodings(imgS,facesCurFrame):
     
     global encodesCurFrame
-    encodesCurFrame = face_recognition.face_encodings(imgS,facesCurFrame,model="large")
+    encodesCurFrame = face_recognition.face_encodings(imgS,facesCurFrame,model="small")
     print('LiveEncoded!!!!!!!!!!!!!!!!!!!!!!!!!')
     result = encodesCurFrame
     return result
@@ -78,7 +88,29 @@ def liveLoco(imgS):
 
     
 def main():
-    Capture()
+    global exiting
+    exiting =False
+
+    print('Press space to capture')
+    timeout=5000
+    t=0
+    while t<timeout: 
+        t1=time.time()
+        try:
+           if keyboard.is_pressed(' '):
+                print('Snapping...')
+                Capture()
+                break
+           elif keyboard.is_pressed('enter'):
+                break
+        except:
+            break
+        finally:
+            t2=time.time()
+            t+=(t2-t1)* 10**3
+            if not t<timeout:
+                print('Timeout, continuing...')
+
     global path,images,classNames,myList
     path = 'BingChilling/Faces/Captured'
     images = []
@@ -103,42 +135,67 @@ def main():
     print('Encoding Complete')
     
     cap = cv2.VideoCapture(0)
-
     Threader = concurrent.futures.ThreadPoolExecutor()
-    Threader.submit(snap,cap)
-    time.sleep(5) 
-    Threader.submit(locationsRepeater)
-    time.sleep(10)
-    Threader.submit(encodeRepeater)
+    future_snap=Threader.submit(snap,cap)
+    while True:
+        try:
+            imgS
+            future_loco=Threader.submit(locationsRepeater)
+        except:
+            continue
+
+        while True:
+            try:
+                facesCurFrame
+                future_enco=Threader.submit(encodeRepeater)
+                break
+            except:
+                continue
+        break
     
 
     print('loops started**')
-    time.sleep(8)
-    print('slept')
+    
 
     # with concurrent.futures.ProcessPoolExecutor() as executor:
 
-
-    print('gotten out of WITH loop')
     while True:
-        for encodeFace,faceLoc in zip(encodesCurFrame,facesCurFrame):
-            
-            matches = face_recognition.compare_faces(encodeListKnown,encodeFace)
-            faceDis = face_recognition.face_distance(encodeListKnown,encodeFace)
-            #print(faceDis)
-            matchIndex = np.argmin(faceDis)
-        
-            if matches[matchIndex]:
-                name = classNames[matchIndex].upper()
-                #print(name)
-                y1,x2,y2,x1 = faceLoc
-                y1, x2, y2, x1 = y1*2,x2*2,y2*2,x1*2
-                cv2.rectangle(img,(x1,y1),(x2,y2),(0,255,0),2)
-                cv2.rectangle(img,(x1,y2-35),(x2,y2),(0,255,0),cv2.FILLED)
-                cv2.putText(img,name,(x1+6,y2-6),cv2.FONT_HERSHEY_COMPLEX,1,(255,255,255),2)
+        try:
+            encodesCurFrame
+            while True:
+                if (keyboard.is_pressed('escape')):
+                    print('Exiting')
+                    exiting = True
+                    while True:
+                        if (future_enco.done() and future_loco.done() and future_snap.done() ):
+                            print('Threads Stopped')
+                            cap.release()
+                            cv2.destroyAllWindows()
+                            print('IO exiting')
+                            exit(1)
+                for encodeFace,faceLoc in zip(encodesCurFrame,facesCurFrame):
+                    
+                    matches = face_recognition.compare_faces(encodeListKnown,encodeFace)
+                    faceDis = face_recognition.face_distance(encodeListKnown,encodeFace)
+                    #print(faceDis)
+                    matchIndex = np.argmin(faceDis)
+                
+                    if matches[matchIndex]:
+                        name = classNames[matchIndex].upper()
+                        #print(name)
+                        y1,x2,y2,x1 = faceLoc
+                        y1, x2, y2, x1 = y1*2,x2*2,y2*2,x1*2
+                        cv2.rectangle(img,(x1,y1),(x2,y2),(0,255,0),2)
+                        cv2.rectangle(img,(x1,y2-35),(x2,y2),(0,255,0),cv2.FILLED)
+                        cv2.putText(img,name,(x1+6,y2-6),cv2.FONT_HERSHEY_COMPLEX,1,(255,255,255),2)
 
-        cv2.imshow('Webcam',img)
-        cv2.waitKey(1)
+                cv2.imshow('Webcam',img)
+                cv2.waitKey(1)
+        
+        except SystemExit:
+            exit(1)
+        except:
+            continue
 
 if __name__=='__main__':
  main()
