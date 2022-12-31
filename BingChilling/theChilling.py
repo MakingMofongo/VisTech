@@ -10,9 +10,6 @@ from FaceSave import Capture
 import concurrent.futures
 
 
-
-
-
 def findEncodings(images):
     encodeList = []
 
@@ -22,7 +19,7 @@ def findEncodings(images):
         img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         try:
             encode = face_recognition.face_encodings(img,model="large")[0]
-            
+
         except IndexError:
             print(f"Couldnt detect {classNames[n]}'s face, Skipping...")
             continue
@@ -64,7 +61,7 @@ def snap(cap):
         imgS = cv2.cvtColor(imgS, cv2.COLOR_BGR2RGB)
 
 def liveEncodings(imgS,facesCurFrame):
-    
+
     global encodesCurFrame
     encodesCurFrame = face_recognition.face_encodings(imgS,facesCurFrame,model="large")
     print('LiveEncoded!!!!!!!!!!!!!!!!!!!!!!!!!')
@@ -76,7 +73,7 @@ def liveLoco(imgS):
     facesCurFrame= face_recognition.face_locations(imgS)
     return facesCurFrame
 
-    
+
 def main():
     Capture()
     global path,images,classNames,myList
@@ -84,9 +81,6 @@ def main():
     images = []
     classNames = [] #names of captured images without extension
     myList = os.listdir(path)
-
- 
-
 
     print(myList)
     n=-1
@@ -98,19 +92,19 @@ def main():
             classNames.append(os.path.splitext(cl)[0])
             print(classNames[n])
         else:
-            print(f'Couldnt read {cl}') 
+            print(f'Couldnt read {cl}')
     encodeListKnown = findEncodings(images)
     print('Encoding Complete')
-    
+
     cap = cv2.VideoCapture(0)
 
     Threader = concurrent.futures.ThreadPoolExecutor()
     Threader.submit(snap,cap)
-    time.sleep(5) 
+    time.sleep(5)
     Threader.submit(locationsRepeater)
     time.sleep(10)
     Threader.submit(encodeRepeater)
-    
+
 
     print('loops started**')
     time.sleep(8)
@@ -122,12 +116,12 @@ def main():
     print('gotten out of WITH loop')
     while True:
         for encodeFace,faceLoc in zip(encodesCurFrame,facesCurFrame):
-            
+
             matches = face_recognition.compare_faces(encodeListKnown,encodeFace)
             faceDis = face_recognition.face_distance(encodeListKnown,encodeFace)
             #print(faceDis)
             matchIndex = np.argmin(faceDis)
-        
+
             if matches[matchIndex]:
                 name = classNames[matchIndex].upper()
                 #print(name)
@@ -140,6 +134,11 @@ def main():
         cv2.imshow('Webcam',img)
         cv2.waitKey(1)
 
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            break
+
 if __name__=='__main__':
  main()
-    
+ cv2.destroyAllwindows()
+ cv2.release()
+

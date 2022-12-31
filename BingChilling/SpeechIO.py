@@ -10,7 +10,6 @@ def stt(prompt):
             r.adjust_for_ambient_noise(source)
 
             print("Please say something...")
-            tts(prompt)
             audio = r.listen(source,timeout=3,phrase_time_limit=3)
 
             try:
@@ -26,12 +25,8 @@ def stt(prompt):
             finally:
                 del r
                 del source
-            
-            return said
-            
-            
 
-            
+            return said
 
 def tts(input_text):
     text = str(input_text)
@@ -43,3 +38,4 @@ def tts(input_text):
     # obj.save("welcome.mp3")
 
     playsound('welcome.mp3')
+stt('heh')
