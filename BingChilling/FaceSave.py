@@ -18,4 +18,3 @@ def Capture():
         break
 
     cap.release()
-stt("breh")
