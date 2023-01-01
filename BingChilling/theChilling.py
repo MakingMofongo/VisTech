@@ -5,6 +5,7 @@ import numpy as np
 import face_recognition
 import os
 import keyboard
+import openpyxl
 
 from FaceSave import Capture
 
@@ -48,6 +49,7 @@ def encodeRepeater():
         if (exiting):
             break
         future1 = Processor.submit(liveEncodings,imgS,facesCurFrame)
+
         encodesCurFrame= future1.result()
 
 def locationsRepeater():
@@ -86,6 +88,75 @@ def liveLoco(imgS):
     facesCurFrame= face_recognition.face_locations(imgS)
     return facesCurFrame
 
+
+try:
+    os.remove('BingChilling/attendanceW.xlsx')
+    print('Deleted')
+except PermissionError:
+    print("COULDNT DELETE, CLOSE THE FILE")
+except:
+    print("Couldnt delete: doesn't exist")
+
+try:
+    wb = openpyxl.load_workbook('BingChilling/attendanceW.xlsx')
+except:
+    wb = openpyxl.Workbook()
+    wb.save('attendanceW.xlsx')
+ws = wb.active
+print('workbook loaded')
+global names,cName
+names=[]
+cName = ''
+
+
+def readxl():
+
+    try:
+        for row in ws.iter_rows():
+            for cell in row:
+                # Clear the contents of the cell
+                cell.value = ''
+        wb.save('BingChilling/attendanceW.xlsx')
+        return 0
+    except:
+        print('CLOSE THE FILE FIRST')
+        time.sleep(5)
+        readxl()
+readxl()
+print('workbook cleared')
+wb.close()
+del(wb)
+wb = openpyxl.load_workbook('BingChilling/attendanceW.xlsx')
+del(ws)
+ws = wb.active
+print('workbook reloaded')
+
+        
+
+def attendance(name):
+    global cName
+    if name in names:
+        # if not cName==name: #warn already taken only once 
+        
+        print(f'Attendance for {name} already taken...........................')
+        cName=name
+        return 0
+
+
+    ws.append([name])
+    try:
+        wb.save('BingChilling/attendanceW.xlsx')
+        if name not in names:
+            names.append(name)
+        
+    except:
+        print('CANT SAVE, CLOSE attendanceW.xlsx')
+        return 0
+
+
+    print(f'name {name} excelled!!!!!!!!!!!!!!!!!!!!!!!!!!!')
+    
+    
     
 def main():
     global exiting
@@ -182,6 +253,7 @@ def main():
                 
                     if matches[matchIndex]:
                         name = classNames[matchIndex].upper()
+                        attendance(name)
                         #print(name)
                         y1,x2,y2,x1 = faceLoc
                         y1, x2, y2, x1 = y1*2,x2*2,y2*2,x1*2
