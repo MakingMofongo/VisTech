@@ -1,17 +1,26 @@
 import speech_recognition as sr
 from gtts import gTTS
 from playsound import playsound
+import os
 
 def stt(prompt):
     r = sr.Recognizer()
 
     with sr.Microphone() as source:
-            print('adjusting for ambient noise')
-            r.adjust_for_ambient_noise(source)
 
-            print("Please say something...")
-            tts(prompt)
-            audio = r.listen(source,timeout=3,phrase_time_limit=3)
+            while True:
+                print('adjusting for ambient noise')
+                r.adjust_for_ambient_noise(source)
+                try:
+                    print("Please say something...")
+                    tts(prompt)
+                    audio = r.listen(source,timeout=3,phrase_time_limit=3)
+                    break
+                except sr.WaitTimeoutError:
+                    print('timeout error, say it again')
+                    continue
+
+
 
             try:
                 said=r.recognize_google(audio)
@@ -36,10 +45,14 @@ def stt(prompt):
 def tts(input_text):
     text = str(input_text)
 
-    # language = 'en'
+    language = 'en'
 
-    # obj = gTTS(text=text, lang=language, slow=False)
-
-    # obj.save("welcome.mp3")
+    obj = gTTS(text=text, lang=language, slow=False)
+    os.remove("welcome.mp3")
+    obj.save("welcome.mp3")
 
     playsound('welcome.mp3')
+
+
+if __name__ == '__main__':
+    stt('bruh')

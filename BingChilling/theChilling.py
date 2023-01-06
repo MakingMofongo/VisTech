@@ -6,7 +6,7 @@ import face_recognition
 import os
 import keyboard
 import openpyxl
-
+from SpeechIO import tts
 from FaceSave import Capture
 
 import concurrent.futures
@@ -45,9 +45,8 @@ def encodeRepeater():
     print('encorepeater Started')
     global encodesCurFrame
     Processor = concurrent.futures.ProcessPoolExecutor()
-    while True:
-        if (exiting):
-            break
+    while not exiting:
+        
         future1 = Processor.submit(liveEncodings,imgS,facesCurFrame)
 
         encodesCurFrame= future1.result()
@@ -78,7 +77,7 @@ def snap(cap):
 def liveEncodings(imgS,facesCurFrame):
     
     global encodesCurFrame
-    encodesCurFrame = face_recognition.face_encodings(imgS,facesCurFrame,model="small")
+    encodesCurFrame = face_recognition.face_encodings(imgS,facesCurFrame,model="large")
     print('LiveEncoded!!!!!!!!!!!!!!!!!!!!!!!!!')
     result = encodesCurFrame
     return result
@@ -134,7 +133,7 @@ print('workbook reloaded')
         
 
 def attendance(name):
-    global cName
+    global cName 
     if name in names:
         # if not cName==name: #warn already taken only once 
         
@@ -173,7 +172,7 @@ def main():
                 Capture()
                 break
            elif keyboard.is_pressed('enter'):
-                break
+                break 
         except:
             break
         finally:
@@ -234,6 +233,14 @@ def main():
         try:
             encodesCurFrame
             while True:
+                try:
+                    if (keyboard.is_pressed('alt')):
+                        print(name)
+                        tts(name)
+                except:
+                    print('No face detected')
+                    tts('no face detected')
+                
                 if (keyboard.is_pressed('escape')):
                     print('Exiting')
                     exiting = True
