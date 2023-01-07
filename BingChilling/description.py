@@ -1,13 +1,13 @@
 from SpeechIO import tts
 import cv2
-import torch
+# import torch
 import numpy as np
 from chatgpt_wrapper import ChatGPT
 
 bot = ChatGPT()
 
 model = torch.hub.load("ultralytics/yolov5","yolov5s",pretrained = True)
-vid= cv2.VideoCapture(1)
+vid= cv2.VideoCapture(0)
 running = True
 while running:
     success,img = vid.read()
@@ -17,7 +17,7 @@ while running:
         stng+=" "+i
     results.render()
     cv2.imshow("something",img)
-    k = cv2.waitKey(0)
+    k = cv2.waitKey(1)
     if(k==ord('s')):
         print("t")
         response = bot.ask(f"""
