@@ -26,20 +26,20 @@ def stt(prompt):
             finally:
                 del r
                 del source
-            
-            return said
-            
-            
 
-            
+            return said
+
+
+
+
 
 def tts(input_text):
     text = str(input_text)
 
-    # language = 'en'
+   # language = 'en'
 
-    # obj = gTTS(text=text, lang=language, slow=False)
+   # obj = gTTS(text=text, lang=language, slow=False)
 
-    # obj.save("welcome.mp3")
+   # obj.save("welcome.mp3")
 
     playsound('welcome.mp3')
