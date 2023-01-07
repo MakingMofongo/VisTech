@@ -8,8 +8,37 @@ import openpyxl
 from SpeechIO import tts
 from FaceSave import Capture
 import concurrent.futures
+import description
 
+import torch
+from chatgpt_wrapper import ChatGPT
 
+def description():    
+    bot = ChatGPT()
+
+    model = torch.hub.load("ultralytics/yolov5","yolov5s",pretrained = True)
+    # vid= cv2.VideoCapture(0)
+    running = True
+    while running:
+
+        # success,img = vid.read()
+        img_gpt = img
+        results = model(img_gpt)
+        stng = ""
+        for i in results.pandas().xyxy[0]["name"].values[:]:
+            stng+=" "+i
+        results.render()
+        cv2.imshow("ObjectDetection",img_gpt)
+        k = cv2.waitKey(1)
+        if(k==ord('s')):
+            print("t")
+            response = bot.ask(f"""
+            {stng}
+            frame a scene in a short sentence from the above information for a blind person 20 limit """)
+            tts(response)  # prints the response from chatGPT
+            running = False
+        if(k==ord('q')):
+            break
 def findEncodings(images):
     encodeList = []
 
@@ -106,6 +135,7 @@ def main():
             t+=(t2-t1)* 10**3
             if not t<timeout:
                 print('Timeout, continuing...')
+                break
 
     global path,images,classNames,myList
     path = 'BingChilling/Faces/Captured'
@@ -133,10 +163,13 @@ def main():
     cap = cv2.VideoCapture(0)
     Threader = concurrent.futures.ThreadPoolExecutor()
     future_snap=Threader.submit(snap,cap)
+    
     while True:
+
         try:
             imgS
             future_loco=Threader.submit(locationsRepeater)
+            future_desc=Threader.submit(description)
         except:
             continue
 
@@ -183,16 +216,16 @@ def main():
                     faceDis = face_recognition.face_distance(encodeListKnown,encodeFace)
                     #print(faceDis)
                     matchIndex = np.argmin(faceDis)
-                
+                    img_fd=img
                     if matches[matchIndex]:
                         name = classNames[matchIndex].upper()
                         y1,x2,y2,x1 = faceLoc
                         y1, x2, y2, x1 = y1*2,x2*2,y2*2,x1*2
-                        cv2.rectangle(img,(x1,y1),(x2,y2),(0,255,0),2)
-                        cv2.rectangle(img,(x1,y2-35),(x2,y2),(0,255,0),cv2.FILLED)
-                        cv2.putText(img,name,(x1+6,y2-6),cv2.FONT_HERSHEY_COMPLEX,1,(255,255,255),2)
+                        cv2.rectangle(img_fd,(x1,y1),(x2,y2),(0,255,0),2)
+                        cv2.rectangle(img_fd,(x1,y2-35),(x2,y2),(0,255,0),cv2.FILLED)
+                        cv2.putText(img_fd,name,(x1+6,y2-6),cv2.FONT_HERSHEY_COMPLEX,1,(255,255,255),2)
 
-                cv2.imshow('Webcam',img)
+                cv2.imshow('FaceDetection',img_fd)
                 cv2.waitKey(1)
         
         except SystemExit:
@@ -200,4 +233,7 @@ def main():
         except:
             continue
 
-    
+# if __name__ =='__main__':
+#     main()
+if __name__ == '__main__':
+    main()
