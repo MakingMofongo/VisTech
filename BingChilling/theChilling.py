@@ -29,16 +29,18 @@ def description():
             stng+=" "+i
         results.render()
         cv2.imshow("ObjectDetection",img_gpt)
-        k = cv2.waitKey(1)
-        if(k==ord('s')):
+        cv2.waitKey(1)
+
+        if(keyboard.is_pressed('s')):
             print("t")
             response = bot.ask(f"""
             {stng}
             frame a scene in a short sentence from the above information for a blind person 20 limit """)
             tts(response)  # prints the response from chatGPT
+            
+        if(keyboard.is_pressed('esc')):
             running = False
-        if(k==ord('q')):
-            break
+            return 0
 def findEncodings(images):
     encodeList = []
 
@@ -204,7 +206,7 @@ def main():
                     print('Exiting')
                     exiting = True
                     while True:
-                        if (future_enco.done() and future_loco.done() and future_snap.done() ):
+                        if (future_enco.done() and future_loco.done() and future_snap.done() and future_desc.done()):
                             print('Threads Stopped')
                             cap.release()
                             cv2.destroyAllWindows()

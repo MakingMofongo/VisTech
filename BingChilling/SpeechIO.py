@@ -43,35 +43,39 @@ def stt(prompt):
             
 
 def tts(input_text):
-    text = str(input_text)
-    path = 'Sounds'
-    myList = os.listdir(path)
-    soundNames=[]
-    print(myList)
-    for cur_sound in myList:
-        soundNames.append(os.path.splitext(cur_sound)[0])
-    print(soundNames)
-    mp3_name=f"{text}.mp3"
+    text = input_text
+    # path = 'Sounds'
+    # myList = os.listdir(path)
+    # soundNames=[]
+    # print(myList)
+    # for cur_sound in myList:
+    #     soundNames.append(os.path.splitext(cur_sound)[0])
+    # print(soundNames)
+    # mp3_name=text+".mp3"
 
-    address=f"{path}/{mp3_name}"
-    if input_text in soundNames:
-        playsound(address)
-    else:
-        language = 'en'
-        try:
-            obj = gTTS(text=text, lang=language, slow=False)
-            try:
-                obj.save(address)
-                playsound(address)
-            except:
-                os.remove(address)
-                raise Exception("No internet")
+    # address=path+mp3_name
+    # if input_text in soundNames:
+    #     playsound(address)
+    # else:
+    language = 'en'
+    os.remove('sound.mp3')
+    obj = gTTS(text=text, lang=language, slow=False)
+    obj.save('sound.mp3')
+    playsound('sound.mp3')
+        # try:
+        #     obj = gTTS(text=text, lang=language, slow=False)
+        #     try:
+        #         obj.save(address)
+        #         playsound(address)
+        #     except:
+        #         os.remove(address)
+        #         raise Exception("No internet")
                 
-        except:
-            print("No internet")
-            tts("No internet")
+        # except:
+        #     print("No internet")
+        #     tts("No internet")
 
 
 if __name__ == '__main__':
     # stt('bruh')
-    tts(' ')
+    tts('bruh momentos unos')
