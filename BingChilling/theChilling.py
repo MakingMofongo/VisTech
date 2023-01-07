@@ -1,18 +1,19 @@
 import time
-t1=time.time()
+# t1=time.time()
 import cv2
 import numpy as np
 import face_recognition
 import os
 import keyboard
-import openpyxl
 from SpeechIO import tts
 from FaceSave import Capture
+import openpyxl
+import pickle
 
 import concurrent.futures
-t2=time.time()
+# t2=time.time()
 
-print(f'import took: {(t2-t1)* 10**3}ms')
+# print(f'import took: {(t2-t1)* 10**3}ms')
 
 
 
@@ -26,6 +27,7 @@ def findEncodings(images):
         img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         try:
             encode = face_recognition.face_encodings(img,num_jitters=5,model="large")[0]
+
             
         except IndexError:
             print(f"Couldnt detect {classNames[n]}'s face, Skipping...")
@@ -35,7 +37,13 @@ def findEncodings(images):
             encodeList.append(encode)
 
     if encodeList:
-        
+        with open('encodeList.pkl', 'wb') as f:
+            pickle.dump(encodeList, f)
+            print('PICKELED ENCODES')
+        with open('nameList.pkl', 'wb') as f:
+            pickle.dump(encodeList, f)
+            print('PICKELED ENCODES')
+        exit(0)
         return encodeList
     else:
         print('couldnt find a single face, exiting....')
@@ -56,7 +64,7 @@ def locationsRepeater():
     global facesCurFrame
     Processor = concurrent.futures.ProcessPoolExecutor()
     while True:
-        if (exiting):
+        if(exiting):
             break
         future1 = Processor.submit(liveLoco,imgS)
         facesCurFrame= future1.result()
@@ -121,14 +129,7 @@ def readxl():
         print('CLOSE THE FILE FIRST')
         time.sleep(5)
         readxl()
-readxl()
-print('workbook cleared')
-wb.close()
-del(wb)
-wb = openpyxl.load_workbook('BingChilling/attendanceW.xlsx')
-del(ws)
-ws = wb.active
-print('workbook reloaded')
+  
 
         
 
@@ -155,7 +156,7 @@ def attendance(name):
 
     print(f'name {name} excelled!!!!!!!!!!!!!!!!!!!!!!!!!!!')
     
-    
+
     
 def main():
     global exiting

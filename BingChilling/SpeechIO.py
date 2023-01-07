@@ -44,15 +44,34 @@ def stt(prompt):
 
 def tts(input_text):
     text = str(input_text)
+    path = 'Sounds'
+    myList = os.listdir(path)
+    soundNames=[]
+    print(myList)
+    for cur_sound in myList:
+        soundNames.append(os.path.splitext(cur_sound)[0])
+    print(soundNames)
+    mp3_name=f"{text}.mp3"
 
-    language = 'en'
-
-    obj = gTTS(text=text, lang=language, slow=False)
-    os.remove("welcome.mp3")
-    obj.save("welcome.mp3")
-
-    playsound('welcome.mp3')
+    address=f"{path}/{mp3_name}"
+    if input_text in soundNames:
+        playsound(address)
+    else:
+        language = 'en'
+        try:
+            obj = gTTS(text=text, lang=language, slow=False)
+            try:
+                obj.save(address)
+                playsound(address)
+            except:
+                os.remove(address)
+                raise Exception("No internet")
+                
+        except:
+            print("No internet")
+            tts("No internet")
 
 
 if __name__ == '__main__':
-    stt('bruh')
+    # stt('bruh')
+    tts(' ')
