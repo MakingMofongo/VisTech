@@ -25,7 +25,7 @@ def findEncodings(images):
         img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         try:
             encode = face_recognition.face_encodings(img,num_jitters=5,model="large")[0]
-            
+
         except IndexError:
             print(f"Couldnt detect {classNames[n]}'s face, Skipping...")
             continue
@@ -34,7 +34,7 @@ def findEncodings(images):
             encodeList.append(encode)
 
     if encodeList:
-        
+
         return encodeList
     else:
         print('couldnt find a single face, exiting....')
@@ -74,7 +74,7 @@ def snap(cap):
         imgS = cv2.cvtColor(imgS, cv2.COLOR_BGR2RGB)
 
 def liveEncodings(imgS,facesCurFrame):
-    
+
     global encodesCurFrame
     encodesCurFrame = face_recognition.face_encodings(imgS,facesCurFrame,model="small")
     print('LiveEncoded!!!!!!!!!!!!!!!!!!!!!!!!!')
@@ -86,7 +86,7 @@ def liveLoco(imgS):
     facesCurFrame= face_recognition.face_locations(imgS)
     return facesCurFrame
 
-    
+
 def main():
     global exiting
     exiting =False
@@ -94,7 +94,7 @@ def main():
     print('Press space to capture')
     timeout=5000
     t=0
-    while t<timeout: 
+    while t<timeout:
         t1=time.time()
         try:
            if keyboard.is_pressed(' '):
@@ -117,7 +117,7 @@ def main():
     classNames = [] #names of captured images without extension
     myList = os.listdir(path)
 
- 
+
 
 
     print(myList)
@@ -130,11 +130,11 @@ def main():
             classNames.append(os.path.splitext(cl)[0])
             print(classNames[n])
         else:
-            print(f'Couldnt read {cl}') 
+            print(f'Couldnt read {cl}')
     encodeListKnown = findEncodings(images)
     print('Encoding Complete')
-    
-    cap = cv2.VideoCapture(0)
+
+    cap = cv2.VideoCapture(1)
     Threader = concurrent.futures.ThreadPoolExecutor()
     future_snap=Threader.submit(snap,cap)
     while True:
@@ -152,10 +152,10 @@ def main():
             except:
                 continue
         break
-    
+
 
     print('loops started**')
-    
+
 
     # with concurrent.futures.ProcessPoolExecutor() as executor:
 
@@ -174,12 +174,12 @@ def main():
                             print('IO exiting')
                             exit(1)
                 for encodeFace,faceLoc in zip(encodesCurFrame,facesCurFrame):
-                    
+
                     matches = face_recognition.compare_faces(encodeListKnown,encodeFace)
                     faceDis = face_recognition.face_distance(encodeListKnown,encodeFace)
                     #print(faceDis)
                     matchIndex = np.argmin(faceDis)
-                
+
                     if matches[matchIndex]:
                         name = classNames[matchIndex].upper()
                         #print(name)
@@ -188,15 +188,12 @@ def main():
                         cv2.rectangle(img,(x1,y1),(x2,y2),(0,255,0),2)
                         cv2.rectangle(img,(x1,y2-35),(x2,y2),(0,255,0),cv2.FILLED)
                         cv2.putText(img,name,(x1+6,y2-6),cv2.FONT_HERSHEY_COMPLEX,1,(255,255,255),2)
-
-                cv2.imshow('Webcam',img)
-                cv2.waitKey(1)
-        
-        except SystemExit:
-            exit(1)
         except:
             continue
+    ret, jpeg =  cv2.imencode('.jpg',img)
+    return jpeg.tobytes
 
 if __name__=='__main__':
  main()
-    
+
+
