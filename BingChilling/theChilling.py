@@ -19,7 +19,7 @@ import psmoveapi
 
 def description():
     bot = ChatGPT()
-
+    
     model = torch.hub.load("ultralytics/yolov5","yolov5s",pretrained = True)
     # vid= cv2.VideoCapture(0)
     running = True
