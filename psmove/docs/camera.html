@@ -1,0 +1,188 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Tracking and Camera &#8212; PS Move API 4.0.12 documentation</title>
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '4.0.12',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Networking (Move Daemon)" href="moved.html" />
+    <link rel="prev" title="Pairing the Controller to your PC" href="pairing.html" /> 
+  </head>
+  <body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="moved.html" title="Networking (Move Daemon)"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="pairing.html" title="Pairing the Controller to your PC"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">PS Move API 4.0.12 documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="tracking-and-camera">
+<h1>Tracking and Camera<a class="headerlink" href="#tracking-and-camera" title="Permalink to this headline">¶</a></h1>
+<p>This page contains information about the camera integration, especially
+as it relates to tracking and the different variants for different OSes.</p>
+<div class="section" id="pseyedriver">
+<h2>PSEYEDriver<a class="headerlink" href="#pseyedriver" title="Permalink to this headline">¶</a></h2>
+<p>This is the recommended way of interfacing with the PS Eye camera on
+Windows and OS X.</p>
+</div>
+<div class="section" id="cl-eye-driver">
+<h2>CL Eye Driver<a class="headerlink" href="#cl-eye-driver" title="Permalink to this headline">¶</a></h2>
+<p>For some situations, on Windows this might give better performance than
+the PS Eye Driver. You just install the CL Eye Driver normally and then
+use the camera via OpenCV.</p>
+</div>
+<div class="section" id="isight-exposure-locking">
+<h2>iSight exposure locking<a class="headerlink" href="#isight-exposure-locking" title="Permalink to this headline">¶</a></h2>
+<p>On Mac OS X, we have problems getting the PS Eye to work reliably with OpenCV.
+Because of that, it makes sense to use other cameras like the iSight camera
+built into most (all?) MacBook (Pro) computers and iMacs. Unfortunately, there
+is no API for controlling the exposure directly. It is possible to lock the
+exposure to a given value so that the exposure isn’t continously corrected.</p>
+<p>How it works normally (continuous autoexposure):</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li>The camera device determines a good first exposure when started</li>
+<li>While frames are captured, the exposure is continuously modified
+(e.g. when you hold the controller near the iSight, the exposure is
+automatically lowered to accommodate the brighter camera image)</li>
+</ol>
+</div></blockquote>
+<p>How it works with locked exposure:</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li>The camera device determines a good first exposure when started</li>
+<li>The exposure set after opening the device will stay the same</li>
+</ol>
+</div></blockquote>
+<p>So what we need to do is the following:</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li>Light up the controller to a very bright color</li>
+<li>Move the controller directly in front of the camera (the sphere
+can actually touch the iSight camera and “block its sight”)</li>
+<li>Open the camera device (the first exposure is determined here)</li>
+<li>As soon as the camera device is opened (and the exposure set),
+lock the exposure so that it doesn’t change anymore</li>
+<li>Move the controller away from the camera, proceed with normal
+initialization procedure (blinking calibration, etc..)</li>
+</ol>
+</div></blockquote>
+<p>The call to locking has been integrated into the tracker library, the
+exposure will be automatically locked when the tracker library is started.</p>
+<p>The exposure seems to be locked until the next reboot in my experiments,
+but the exposure is determined every time the camera device is opened (but
+will stay locked after opening the device).</p>
+<p>Because of this, the calibration procedure on Mac OS X is a bit different
+to other platforms, because we have to light up the controller, put it in
+front of the iSight, open the camera device, wait for a good exposure, and
+only then continue with normal calibration. This has been implemented in
+<code class="docutils literal"><span class="pre">examples/c/test_tracker.c</span></code> - the console output will tell you what to do:</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li>Start the application</li>
+<li>Move the controller that lights up close to the iSight</li>
+<li>Press the Move button on this controller</li>
+<li>Keep the controller close to the iSight while the camera is opened</li>
+<li>Move the controller away from the iSight and press the Move button</li>
+</ol>
+</div></blockquote>
+<p>Thanks to Raphaël de Courville who had the initial idea for the exposure
+locking, did some experimentation with it and provided an first draft of the
+implementation that is now integrated in simplified form in the library.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h3><a href="index.html">Table Of Contents</a></h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="build.html">Building from Source</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pairing.html">Pairing</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Camera</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#pseyedriver">PSEYEDriver</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#cl-eye-driver">CL Eye Driver</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#isight-exposure-locking">iSight exposure locking</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="moved.html">Network (Move Daemon)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="config.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="navcon.html">Navigation Controller</a></li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="pairing.html"
+                        title="previous chapter">Pairing the Controller to your PC</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="moved.html"
+                        title="next chapter">Networking (Move Daemon)</a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="moved.html" title="Networking (Move Daemon)"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="pairing.html" title="Pairing the Controller to your PC"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">PS Move API 4.0.12 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2020, Thomas Perl.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.7.
+    </div>
+  </body>
+</html>

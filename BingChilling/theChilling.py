@@ -172,7 +172,7 @@ def main():
             imgS
             future_loco=Threader.submit(locationsRepeater)
             future_desc=Threader.submit(description)
-        except:
+        except:     
             continue
 
         while True:
@@ -212,13 +212,14 @@ def main():
                             cv2.destroyAllWindows()
                             print('IO exiting')
                             exit(1)
+                img_fd=img
                 for encodeFace,faceLoc in zip(encodesCurFrame,facesCurFrame):
                     
                     matches = face_recognition.compare_faces(encodeListKnown,encodeFace)
                     faceDis = face_recognition.face_distance(encodeListKnown,encodeFace)
                     #print(faceDis)
                     matchIndex = np.argmin(faceDis)
-                    img_fd=img
+                    
                     if matches[matchIndex]:
                         name = classNames[matchIndex].upper()
                         y1,x2,y2,x1 = faceLoc

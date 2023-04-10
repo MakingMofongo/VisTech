@@ -1,0 +1,194 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Navigation Controller &#8212; PS Move API 4.0.12 documentation</title>
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '4.0.12',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Configuration" href="config.html" /> 
+  </head>
+  <body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="config.html" title="Configuration"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">PS Move API 4.0.12 documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="navigation-controller">
+<h1>Navigation Controller<a class="headerlink" href="#navigation-controller" title="Permalink to this headline">¶</a></h1>
+<p>While the “PS Move Navigation Controller” (CECH-ZCS1E) is marketed
+together with the Move Controller, in reality it’s just a special
+variant of the SixAxis / DualShock 3 controller with its own PID.</p>
+<ul class="simple">
+<li>Vendor ID: <strong>0x054c</strong> (Sony Corp.)</li>
+<li>Product ID: <strong>0x042f</strong> (PlayStation Move navigation controller)</li>
+</ul>
+<p>As such, the Navigation Controller does not need a special library
+for reading, processing and interpreting input events. After pairing,
+the controller can be used just like a normal gamepad device via
+the operating system game controller APIs.</p>
+<div class="section" id="pairing">
+<h2>Pairing<a class="headerlink" href="#pairing" title="Permalink to this headline">¶</a></h2>
+<p>The <code class="docutils literal"><span class="pre">psmove</span></code> command-line utility now comes with a new sub-command
+<code class="docutils literal"><span class="pre">pair-nav</span></code>, which will use <code class="docutils literal"><span class="pre">sixpair</span></code> to pair a Navigation Controller
+(as well as a Sixaxis, DS3 and DS4) via USB. <code class="docutils literal"><span class="pre">sixpair</span></code> comes from the
+<a class="reference external" href="https://github.com/RetroPie/sixad">sixad</a> package, but has been modified to read the Bluetooth Host
+address from the PS Move API libraries (for cross-platform support):</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">psmove</span> <span class="n">pair</span><span class="o">-</span><span class="n">nav</span>
+</pre></div>
+</div>
+<p>Just like with the normal pairing function, one can pass an alternative
+Bluetooth host address to the pairing tool:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">psmove</span> <span class="n">pair</span><span class="o">-</span><span class="n">nav</span> <span class="n">aa</span><span class="p">:</span><span class="n">bb</span><span class="p">:</span><span class="n">cc</span><span class="p">:</span><span class="n">dd</span><span class="p">:</span><span class="n">ee</span><span class="p">:</span><span class="n">ff</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="testing">
+<h2>Testing<a class="headerlink" href="#testing" title="Permalink to this headline">¶</a></h2>
+<p>The easiest way to test the controller is via the <code class="docutils literal"><span class="pre">jstest</span></code> tool,
+which comes in the <code class="docutils literal"><span class="pre">joystick</span></code> package on Debian-based systems:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">apt</span> <span class="n">install</span> <span class="n">joystick</span>
+</pre></div>
+</div>
+<p>Assuming the Navigation Controller is the only joystick-style device
+connected, you can test it with:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">jstest</span> <span class="o">/</span><span class="n">dev</span><span class="o">/</span><span class="nb">input</span><span class="o">/</span><span class="n">js0</span>
+</pre></div>
+</div>
+<p>There is an example file <code class="docutils literal"><span class="pre">examples/c/test_navcon.cpp</span></code> that shows
+how to use SDL2 to read the navigation controller (this is also
+built as a program if <code class="docutils literal"><span class="pre">PSMOVE_BUILD_NAVCON_TEST</span></code> is enabled in CMake):</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">test_navcon</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="axes-and-buttons">
+<h2>Axes and Buttons<a class="headerlink" href="#axes-and-buttons" title="Permalink to this headline">¶</a></h2>
+<p>These values are also exposed in <code class="docutils literal"><span class="pre">psmove.h</span></code> as <code class="docutils literal"><span class="pre">enum</span> <span class="pre">PSNav_Button</span></code>
+and <code class="docutils literal"><span class="pre">enum</span> <span class="pre">PSNav_Axis</span></code> for your convenience. However, you are
+expected to bring your own Joystick-reading library (e.g. SDL2).</p>
+<blockquote>
+<div><ul class="simple">
+<li>Analog stick<ul>
+<li>Axis 0 (horizontal, “X”)</li>
+<li>Axis 1 (vertical, “Y”)</li>
+<li>Button 7 when pressed (“L3”)</li>
+</ul>
+</li>
+<li>Shoulder button (“L1”): Button 4</li>
+<li>Analog trigger (“L2”):<ul>
+<li>Axis 2 (“Z”)</li>
+<li>Button 5 when pressed (even just slightly)</li>
+</ul>
+</li>
+<li>Cross button: Button 0</li>
+<li>Circle button: Button 1</li>
+<li>D-Pad Up: Button 8</li>
+<li>D-Pad Down: Button 9</li>
+<li>D-Pad Left: Button 10</li>
+<li>D-Pad Right: Button 11</li>
+<li>PS button: Button 6</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="caveats">
+<h2>Caveats<a class="headerlink" href="#caveats" title="Permalink to this headline">¶</a></h2>
+<p>On Linux, all inputs work via both USB and Bluetooth. When connecting
+via USB, you might need to press the PS button for the controller to
+start reporting.</p>
+<p>On macOS, inputs only work over Bluetooth, not via USB. Also, the
+button assignment is different on macOS (but <code class="docutils literal"><span class="pre">psmove.h</span></code> contains
+definitions for both platforms and will pick the right ones). As a
+special case, the analog value of the trigger isn’t available on
+macOS at the moment.</p>
+<p>This is not tested at all on Windows, contributions welcome.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h3><a href="index.html">Table Of Contents</a></h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="build.html">Building from Source</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pairing.html">Pairing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="camera.html">Camera</a></li>
+<li class="toctree-l1"><a class="reference internal" href="moved.html">Network (Move Daemon)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="config.html">Configuration</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Navigation Controller</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#pairing">Pairing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#testing">Testing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#axes-and-buttons">Axes and Buttons</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#caveats">Caveats</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="config.html"
+                        title="previous chapter">Configuration</a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="config.html" title="Configuration"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">PS Move API 4.0.12 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2020, Thomas Perl.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.7.
+    </div>
+  </body>
+</html>

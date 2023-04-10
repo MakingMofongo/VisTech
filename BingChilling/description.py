@@ -9,10 +9,10 @@ def main():
     bot = ChatGPT()
 
     model = torch.hub.load("ultralytics/yolov5","yolov5s",pretrained = True)
-    # vid= cv2.VideoCapture(0)
+    vid= cv2.VideoCapture(0)
     running = True
     while running:
-        # success,img = vid.read()
+        success,img = vid.read()
         results = model(img)
         stng = ""
         for i in results.pandas().xyxy[0]["name"].values[:]:
@@ -29,3 +29,4 @@ def main():
             running = False
         if(k==ord('q')):
             break
+main()
