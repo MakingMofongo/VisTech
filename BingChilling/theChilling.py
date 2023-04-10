@@ -5,13 +5,17 @@ import face_recognition
 import os
 import keyboard
 import openpyxl
+
 from SpeechIO import tts
 from FaceSave import Capture
 import concurrent.futures
-import description
 
 import torch
 from chatgpt_wrapper import ChatGPT
+
+import sys
+sys.path.append(r'C:\Users\Abdul Rasheed\OneDrive\Documents\GitHub\VisTech!\psmove\bindings\python')
+import psmoveapi
 
 def description():
     bot = ChatGPT()
@@ -30,17 +34,20 @@ def description():
         results.render()
         cv2.imshow("ObjectDetection",img_gpt)
         cv2.waitKey(1)
-
-        if(keyboard.is_pressed('s')):
+        
+        # if(Move.key=='T'):
+        if(keyboard.is_pressed('q')):
             print("t")
             response = bot.ask(f"""
             {stng}
-            frame a scene in a short sentence from the above information for a blind person 20 limit """)
+            frame a scene in a short sentence from the above information for a person 20 limit """)
             tts(response)  # prints the response from chatGPT
 
+        # if(Move.key=='BOX'):
         if(keyboard.is_pressed('esc')):
             running = False
             return 0
+            
 def findEncodings(images):
     encodeList = []
 
@@ -56,7 +63,8 @@ def findEncodings(images):
             continue
         if encode.any:
             print(f'encoding {myList[n]}')
-            encodeList.append(encode)
+            encodeList.append(encode
+                              )
 
     if encodeList:
 
@@ -87,6 +95,7 @@ def locationsRepeater():
 
 def snap(cap):
     while True:
+        Move.update()
         if(exiting):
             break
         global img
@@ -101,12 +110,12 @@ def liveEncodings(imgS,facesCurFrame):
 
     global encodesCurFrame
     encodesCurFrame = face_recognition.face_encodings(imgS,facesCurFrame,model="large")
-    print('LiveEncoded!!!!!!!!!!!!!!!!!!!!!!!!!')
+    # print('LiveEncoded!!!!!!!!!!!!!!!!!!!!!!!!!')
     result = encodesCurFrame
     return result
 
 def liveLoco(imgS):
-    print('locoing')
+    # print('locoing')
     facesCurFrame= face_recognition.face_locations(imgS)
     return facesCurFrame
 
@@ -162,10 +171,51 @@ def main():
     encodeListKnown = findEncodings(images)
     print('Encoding Complete')
 
-    cap = cv2.VideoCapture(0)
-    Threader = concurrent.futures.ThreadPoolExecutor()
-    future_snap=Threader.submit(snap,cap)
+    class RedTrigger(psmoveapi.PSMoveAPI):
+        def __init__(self):
+            super().__init__()
+            self.quit = False
 
+        def on_connect(self, controller):
+            controller.connection_time = time.time()
+            print('Controller connected:', controller, controller.connection_time)
+
+        def on_update(self, controller):
+            # print('Update controller:', controller, int(time.time() - controller.connection_time))
+            # print(controller.accelerometer, '->', controller.color, 'usb:', controller.usb, 'bt:', controller.bluetooth)
+            up_pointing = min(1, max(0, 0.5 + 0.5 * controller.accelerometer.y))
+            controller.color = psmoveapi.RGB(controller.trigger, up_pointing, 1.0 if controller.usb else 0.0)
+            self.key='NONE'
+            if controller.now_pressed(psmoveapi.Button.PS):
+                self.quit = True
+            if controller.now_pressed(psmoveapi.Button.SQUARE):
+                print('SQUARE')
+                self.key='SQUARE'
+            if controller.now_pressed(psmoveapi.Button.TRIANGLE):
+                print('TRIANGLE')
+                self.key='TRIANGLE'
+            if controller.now_pressed(psmoveapi.Button.CIRCLE):
+                self.key='CIRCLE'
+            if controller.now_pressed(psmoveapi.Button.CROSS):
+                self.key='CROSS'
+            if controller.now_pressed(psmoveapi.Button.T):
+                self.key='T'
+            if controller.now_pressed(psmoveapi.Button.MOVE):
+                self.key='MOVE'  
+            if controller.now_pressed(psmoveapi.Button.PS):
+                self.key='PS'  
+
+                      
+
+
+            def on_disconnect(self, controller):
+                print('Controller disconnected:', controller)
+
+    cap = cv2.VideoCapture(1 )
+    Threader = concurrent.futures.ThreadPoolExecutor()
+    global Move
+    Move = RedTrigger()
+    future_snap=Threader.submit(snap,cap)
     while True:
 
         try:
@@ -188,21 +238,28 @@ def main():
     print('loops started**')
 
 
-    # with concurrent.futures.ProcessPoolExecutor() as executor:
 
     while True:
         try:
             encodesCurFrame
             while True:
+
+                
                 try:
-                    if (keyboard.is_pressed('alt')):
-                        print(name)
-                        tts(name)
+                    # if (Move.key=='MOVE'):
+                    if(keyboard.is_pressed('space')):
+                        if not name == '':
+                            print(name)
+                            tts(name)
+                        else:
+                            print('No face detected')
+                            tts('No face detected')
                 except:
                     print('No face detected')
                     tts('no face detected')
 
-                if (keyboard.is_pressed('escape')):
+                # if (Move.key=='PS'):
+                if(keyboard.is_pressed('esc')):
                     print('Exiting')
                     exiting = True
                     while True:
@@ -212,13 +269,14 @@ def main():
                             cv2.destroyAllWindows()
                             print('IO exiting')
                             exit(1)
+                img_fd=img
+                # name=''
                 for encodeFace,faceLoc in zip(encodesCurFrame,facesCurFrame):
 
                     matches = face_recognition.compare_faces(encodeListKnown,encodeFace)
                     faceDis = face_recognition.face_distance(encodeListKnown,encodeFace)
                     #print(faceDis)
                     matchIndex = np.argmin(faceDis)
-                    img_fd=img
                     if matches[matchIndex]:
                         name = classNames[matchIndex].upper()
                         y1,x2,y2,x1 = faceLoc

@@ -1,0 +1,149 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Configuration &#8212; PS Move API 4.0.12 documentation</title>
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '4.0.12',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Navigation Controller" href="navcon.html" />
+    <link rel="prev" title="Networking (Move Daemon)" href="moved.html" /> 
+  </head>
+  <body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="navcon.html" title="Navigation Controller"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="moved.html" title="Networking (Move Daemon)"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">PS Move API 4.0.12 documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="configuration">
+<h1>Configuration<a class="headerlink" href="#configuration" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="environment-variables">
+<h2>Environment Variables<a class="headerlink" href="#environment-variables" title="Permalink to this headline">¶</a></h2>
+<p>Some aspects of the tracker can be configured at runtime using environment variables. The following environment variables are currently recognized by the tracker (with examples for the Linux/Unix bash):</p>
+<dl class="docutils">
+<dt>PSMOVE_TRACKER_CAMERA</dt>
+<dd><p class="first">If set, this is the camera that will be used when using <code class="docutils literal"><span class="pre">psmove_tracker_new()</span></code> instead of using auto-detection.</p>
+<p>Example:</p>
+<div class="last highlight-default"><div class="highlight"><pre><span></span><span class="n">export</span> <span class="n">PSMOVE_TRACKER_CAMERA</span><span class="o">=</span><span class="mi">2</span>  <span class="c1"># Will use the 3rd camera</span>
+</pre></div>
+</div>
+</dd>
+<dt>PSMOVE_TRACKER_FILENAME</dt>
+<dd><p class="first">If set, this will use a video file to playback instead of capturing from a camera. Any camera settings are ignored.</p>
+<p>Example:</p>
+<div class="last highlight-default"><div class="highlight"><pre><span></span><span class="n">export</span> <span class="n">PSMOVE_TRACKER_FILENAME</span><span class="o">=</span><span class="n">demo</span><span class="o">.</span><span class="n">avi</span> <span class="c1"># Will play demo.avi</span>
+</pre></div>
+</div>
+</dd>
+<dt>PSMOVE_TRACKER_ROI_SIZE</dt>
+<dd><p class="first">If set, this controls the size of the biggest (initial) ROI that will be used to track the controller. Bigger means slower in general, but recovery from tracking loss might be faster.</p>
+<p>Example:</p>
+<div class="last highlight-default"><div class="highlight"><pre><span></span><span class="n">export</span> <span class="n">PSMOVE_TRACKER_ROI_SIZE</span><span class="o">=</span><span class="mi">200</span>
+</pre></div>
+</div>
+</dd>
+<dt>PSMOVE_TRACKER_WIDTH, PSMOVE_TRACKER_HEIGHT</dt>
+<dd><p class="first">If set, these variables control the desired size of the camera picture.</p>
+<p>Example:</p>
+<div class="last highlight-default"><div class="highlight"><pre><span></span><span class="n">export</span> <span class="n">PSMOVE_TRACKER_WIDTH</span><span class="o">=</span><span class="mi">1280</span>
+<span class="n">export</span> <span class="n">PSMOVE_TRACKER_HEIGHT</span><span class="o">=</span><span class="mi">720</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h3><a href="index.html">Table Of Contents</a></h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="build.html">Building from Source</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pairing.html">Pairing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="camera.html">Camera</a></li>
+<li class="toctree-l1"><a class="reference internal" href="moved.html">Network (Move Daemon)</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Configuration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#environment-variables">Environment Variables</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="navcon.html">Navigation Controller</a></li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="moved.html"
+                        title="previous chapter">Networking (Move Daemon)</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="navcon.html"
+                        title="next chapter">Navigation Controller</a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="navcon.html" title="Navigation Controller"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="moved.html" title="Networking (Move Daemon)"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">PS Move API 4.0.12 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2020, Thomas Perl.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.7.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,149 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>PS Move API Documentation &#8212; PS Move API 4.0.12 documentation</title>
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '4.0.12',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Building PS Move API from source" href="build.html" /> 
+  </head>
+  <body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="build.html" title="Building PS Move API from source"
+             accesskey="N">next</a> |</li>
+        <li class="nav-item nav-item-0"><a href="#">PS Move API 4.0.12 documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="ps-move-api-documentation">
+<h1>PS Move API Documentation<a class="headerlink" href="#ps-move-api-documentation" title="Permalink to this headline">¶</a></h1>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="build.html">Building from Source</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="build.html#building-on-macos-10-14">Building on macOS 10.14</a></li>
+<li class="toctree-l2"><a class="reference internal" href="build.html#building-on-ubuntu-18-04">Building on Ubuntu 18.04</a></li>
+<li class="toctree-l2"><a class="reference internal" href="build.html#building-on-windows-visual-studio">Building on Windows (Visual Studio)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="build.html#cross-compiling-for-windows-mingw">Cross-Compiling for Windows (MinGW)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="build.html#building-for-the-pocket-c-h-i-p">Building for the Pocket C.H.I.P</a></li>
+<li class="toctree-l2"><a class="reference internal" href="build.html#python-bindings">Python bindings</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="pairing.html">Pairing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="pairing.html#bluetooth-pairing">Bluetooth pairing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pairing.html#connecting-via-bluetooth">Connecting via Bluetooth</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pairing.html#troubleshooting">Troubleshooting</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="camera.html">Camera</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="camera.html#pseyedriver">PSEYEDriver</a></li>
+<li class="toctree-l2"><a class="reference internal" href="camera.html#cl-eye-driver">CL Eye Driver</a></li>
+<li class="toctree-l2"><a class="reference internal" href="camera.html#isight-exposure-locking">iSight exposure locking</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="moved.html">Network (Move Daemon)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="moved.html#moved2-hosts-txt">moved2_hosts.txt</a></li>
+<li class="toctree-l2"><a class="reference internal" href="moved.html#api-usage">API Usage</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="config.html">Configuration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="config.html#environment-variables">Environment Variables</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="navcon.html">Navigation Controller</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="navcon.html#pairing">Pairing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="navcon.html#testing">Testing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="navcon.html#axes-and-buttons">Axes and Buttons</a></li>
+<li class="toctree-l2"><a class="reference internal" href="navcon.html#caveats">Caveats</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="mailing-list">
+<h2>Mailing List<a class="headerlink" href="#mailing-list" title="Permalink to this headline">¶</a></h2>
+<p>For questions, please read the archives of the PS Move Mailing List. If you
+cannot find an answer to your question in the archives, send an e-mail:</p>
+<blockquote>
+<div><a class="reference external" href="https://groups.google.com/forum/#!aboutgroup/psmove">https://groups.google.com/forum/#!aboutgroup/psmove</a></div></blockquote>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h3><a href="#">Table Of Contents</a></h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="build.html">Building from Source</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pairing.html">Pairing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="camera.html">Camera</a></li>
+<li class="toctree-l1"><a class="reference internal" href="moved.html">Network (Move Daemon)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="config.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="navcon.html">Navigation Controller</a></li>
+</ul>
+
+  <h4>Next topic</h4>
+  <p class="topless"><a href="build.html"
+                        title="next chapter">Building PS Move API from source</a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="build.html" title="Building PS Move API from source"
+             >next</a> |</li>
+        <li class="nav-item nav-item-0"><a href="#">PS Move API 4.0.12 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2020, Thomas Perl.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.7.
+    </div>
+  </body>
+</html>
