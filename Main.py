@@ -6,7 +6,7 @@ import os
 import keyboard
 import openpyxl
 import sys
-from SpeechIO import tts
+from ElevenLabs import eleven_labs
 from FaceSave import Capture
 import concurrent.futures
 
@@ -195,7 +195,7 @@ def main(cap,initial_index):
     names=[]
     cName = ''
 
-
+    
     print('***FACE RECOGNITION***')
     print('Press space to capture')
     timeout=5000 
@@ -323,13 +323,13 @@ def main(cap,initial_index):
                     if(keyboard.is_pressed('space')):
                         if not name == '':
                             print(name)
-                            tts(name)
+                            ELTTS.speech(name)
                         else:
                             print('No face detected')
-                            tts('No face detected')
+                            ELTTS.speech('No face detected')
                 except:
                     print('No face detected')
-                    tts('no face detected')
+                    ELTTS.speech('no face detected')
 
                 # TEXT TTS
                 if(keyboard.is_pressed('q')):
@@ -338,7 +338,7 @@ def main(cap,initial_index):
                         text = 'No text detected'
                     print(f"\n\n OCR TEXT: {text} \n\n")
 
-                    tts(text)
+                    ELTTS.speech(text)
 
                 # OCR display text and image
                 if(keyboard.is_pressed('t')):
@@ -353,14 +353,18 @@ def main(cap,initial_index):
                         text = 'No text detected'
 
                     print(f"OCR TEXT: {text}")
-                    prompt = f'TEXT: {text}, OBJECTS: {objects}'
+
+                    print('face detected: ',name)
+
+                    prompt = f'Text: {text}, Objects: {objects}, Faces detected: {name}'
                     print (f"prompt: {prompt}")
                     print('Describing image...')
+
 
                     Description = description(BOT, prompt)
                     print(f"\n \nDescription: {Description}\n \n")
                     print('Speaking...')
-                    tts(Description[1])
+                    ELTTS.speech(Description[1])
                     print('Done Speaking')
 
 
@@ -415,26 +419,36 @@ def main(cap,initial_index):
             continue
         
 if __name__ == '__main__':
+    ELTTS = eleven_labs.ElevenLabsSpeech()
+    ELTTS.setup()
+    ELTTS.speech('Speech has been setup')
     global exiting
     exiting=False
     initial_index = 0
     print('Starting camera...')
+    ELTTS.speech('Starting camera')
     while True:
         cap = cv2.VideoCapture(initial_index)
         print('Trying camera at index: ',initial_index)
         success, img = cap.read()
         if success:
             print('Camera started')
+            ELTTS.speech('Camera started')
             break
         else:
             print('Camera not found at index: ',initial_index)
             initial_index += 1
+    
 
     global OBJECTS
     global BOT
-    # BOT = bot_initialize()
+    BOT = bot_initialize()
     print('BOT INITIALIZED')
+    ELTTS.speech('bot INITIALIZED')
     test_string = 'Text: Shop, Objects: car'
     print('Testing BOT with string: ',test_string)
-    # print(f"Response: {description(BOT,test_string)}")
+    ELTTS.speech('Testing bot with string: '+test_string)
+    response = description(BOT,test_string)
+    print(f"Response: {response}")
+    ELTTS.speech('Response: '+str(response[1]))
     main(cap,initial_index)
